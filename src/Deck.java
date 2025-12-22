@@ -10,6 +10,7 @@ public class Deck {
     public Deck() {
     }
 
+    // creates the deck and adds all 112 cards
     public void initializeDeck() {
         for (ColorEnum color : ColorEnum.values()) {
 
@@ -52,7 +53,7 @@ public class Deck {
      
     }
 
-
+    // prints the number of coloured and wild cards
     public void printDeckCount() {
         int hasColorCount =0;
         int wildCount = 0;
@@ -70,7 +71,7 @@ public class Deck {
 
     }
  
-
+    // shuffles cards
     public void shuffle() {
         List<Card> temp = new ArrayList<>(deck);
         Collections.shuffle(temp);

@@ -1,11 +1,10 @@
 import java.util.ArrayList;
 public class Player {
     public String name;
-    private ArrayList<Card> hand = new ArrayList<>();
+    private ArrayList<Card> hand;
 
-    public Player(String name, ArrayList<Card> hand) {
+    public Player(String name) {
         this.name = name;
-        this.hand = hand;
     }
 
     public ArrayList<Card> getHand() {
