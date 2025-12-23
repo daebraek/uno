@@ -15,12 +15,39 @@ public class UnoGame {
     public static void main(String[] args) throws Exception {
 
         UnoGame game = new UnoGame();
-        game.printPlayers();
+
+        game.initializePlayers();
+        game.dealCards();
+
+
+        for (Player player : game.players) {
+            player.printHand();
+        }
+
+        game.deckHandler.printDeckCount();
 
     }
 
-    public void game() {
+
+    public void startGame() {
     }
+
+    // shuffles deck and deals cards to players
+    public void dealCards() {
+        deckHandler.initializeDeck();
+        deckHandler.shuffle();
+        
+        int dealCount = 1;
+
+        while(dealCount<=7) {
+            for (Player player : players) {
+                player.getHand().add(deck.pop());
+            }
+            dealCount++;
+        }
+
+    }
+
 
     // prompts user to configure players and updates player array 
     public void initializePlayers() {
@@ -35,8 +62,8 @@ public class UnoGame {
 
         while (count<=playersCount) {
             System.out.println("Player " + count + ", what is your name?");
-
             String playerName = scanner.nextLine();
+
             players.add(new Player(playerName));
 
             count++;

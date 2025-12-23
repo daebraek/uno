@@ -1,5 +1,6 @@
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +9,21 @@ public class Deck {
     Deque<Card> deck = new ArrayDeque<>();
 
     public Deck() {
+    }
+
+    // test|prints out first 11 cards of deck
+    public void testPrint() {
+        Iterator<Card> it = deck.iterator();
+
+        int count = 0;
+
+        while(it.hasNext() && count<=10) {
+            Card card = it.next();
+            System.out.println(card.color + " " + card.value);
+
+            count++;
+        }
+
     }
 
     // creates the deck and adds all 112 cards
@@ -71,13 +87,20 @@ public class Deck {
 
     }
  
-    // shuffles cards
+    // shuffles cards twice
     public void shuffle() {
-        List<Card> temp = new ArrayList<>(deck);
-        Collections.shuffle(temp);
+        int shuffleCount = 0;
+        
+        while (shuffleCount<=2) {
+            List<Card> temp = new ArrayList<>(deck);
+            Collections.shuffle(temp);
 
-        deck.clear();
-        deck.addAll(temp);
+            deck.clear();
+            deck.addAll(temp);
+
+            shuffleCount++;
+        }
+
     }
     
 
