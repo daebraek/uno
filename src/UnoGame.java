@@ -41,41 +41,44 @@ public class UnoGame {
         while (!isGameOver) {
 
             for (Player player : players) {
-                Card card = pile.getFirst();
+                Card pileCard = pile.getFirst();
 
                 player.printHand();
+                ArrayList<Card> hand = player.getHand();
+                
                 System.out.println("What card do you want to play? Type the color and value");
                 String color = scanner.nextLine().toUpperCase();
                 String value = scanner.nextLine().toUpperCase();
 
-                
+                Card playerCard = stringToCard(color, value);
 
-                
+                if (isMoveValid(playerCard, pileCard) && hand.contains(playerCard)) {       
+                    pile.add(hand.remove(hand.indexOf(playerCard)));
+                }  
 
-
-                }
             }
         }
     }
+    
 
-    public void stringToCard(String color, String value) {
-       Card card = new Card(ColorEnum.valueOf(color.toUpperCase()), ValueEnum.valueOf(value.toUpperCase()))
+    public Card stringToCard(String color, String value) {
+       return new Card(ColorEnum.valueOf(color.toUpperCase()), ValueEnum.valueOf(value.toUpperCase()));
     }
 
 
-    // checks if the player's card is a valid move
-    public boolean isMoveValid(Card playCard, Card oppCard) {
+    // returns true if the player's card is a valid move
+    public boolean isMoveValid(Card playCard, Card pileCard) {
         ColorEnum playColor = playCard.color;
-        ColorEnum oppColor = oppCard.color;
+        ColorEnum pileColor = pileCard.color;
 
         ValueEnum playValue = playCard.value;
-        ValueEnum oppValue = oppCard.value;
+        ValueEnum pileValue = pileCard.value;
 
-        if (playColor.equals(ColorEnum.WILD)) {
+        if (playColor == ColorEnum.WILD) {
             return true;
         }
 
-        else if (playColor.equals(oppColor) || playValue.equals(oppValue)) {
+        else if (playColor == pileColor || playValue == pileValue) {
             return true;
         }
 
@@ -95,7 +98,6 @@ public class UnoGame {
             }
             dealCount++;
         }
-
     }
 
     // prompts user to configure players and updates player array 
