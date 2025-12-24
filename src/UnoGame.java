@@ -32,6 +32,56 @@ public class UnoGame {
     public void startGame() {
     }
 
+    // main game logic
+    public void playGame() {
+        boolean isGameOver = false;
+
+        pile.add(deck.pop());
+
+        while (!isGameOver) {
+
+            for (Player player : players) {
+                Card card = pile.getFirst();
+
+                player.printHand();
+                System.out.println("What card do you want to play? Type the color and value");
+                String color = scanner.nextLine().toUpperCase();
+                String value = scanner.nextLine().toUpperCase();
+
+                
+
+                
+
+
+                }
+            }
+        }
+    }
+
+    public void stringToCard(String color, String value) {
+       Card card = new Card(ColorEnum.valueOf(color.toUpperCase()), ValueEnum.valueOf(value.toUpperCase()))
+    }
+
+
+    // checks if the player's card is a valid move
+    public boolean isMoveValid(Card playCard, Card oppCard) {
+        ColorEnum playColor = playCard.color;
+        ColorEnum oppColor = oppCard.color;
+
+        ValueEnum playValue = playCard.value;
+        ValueEnum oppValue = oppCard.value;
+
+        if (playColor.equals(ColorEnum.WILD)) {
+            return true;
+        }
+
+        else if (playColor.equals(oppColor) || playValue.equals(oppValue)) {
+            return true;
+        }
+
+        return false;
+    }
+
     // shuffles deck and deals cards to players
     public void dealCards() {
         deckHandler.initializeDeck();
@@ -47,7 +97,6 @@ public class UnoGame {
         }
 
     }
-
 
     // prompts user to configure players and updates player array 
     public void initializePlayers() {
