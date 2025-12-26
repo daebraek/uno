@@ -19,7 +19,7 @@ public class Deck {
 
         while(it.hasNext() && count<=10) {
             Card card = it.next();
-            System.out.println(card.color + " " + card.value);
+            System.out.println(card);
 
             count++;
         }

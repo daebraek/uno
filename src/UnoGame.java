@@ -20,11 +20,13 @@ public class UnoGame {
         game.dealCards();
 
 
-        for (Player player : game.players) {
+/*         for (Player player : game.players) {
             player.printHand();
-        }
+        } */
 
-        game.deckHandler.printDeckCount();
+        //game.deckHandler.printDeckCount();
+
+        game.playGame();
 
     }
 
@@ -36,33 +38,60 @@ public class UnoGame {
     public void playGame() {
         boolean isGameOver = false;
 
-        pile.add(deck.pop());
+        do {
+            pile.addFirst(deck.pop());
+        } while (pile.getFirst().color==ColorEnum.WILD);
+
+
 
         while (!isGameOver) {
-
+            
             for (Player player : players) {
+                System.out.println(player.name+"'s Turn");
+                System.out.println();
+                
+
                 Card pileCard = pile.getFirst();
+                
+                System.out.println("First Card in the Pile: "+pileCard);
+                System.out.println();
 
                 player.printHand();
                 ArrayList<Card> hand = player.getHand();
                 
-                System.out.println("What card do you want to play? Type the color and value");
+                System.out.println(player.name+", what card do you want to play? Type the color and value.");
                 String color = scanner.nextLine().toUpperCase();
                 String value = scanner.nextLine().toUpperCase();
 
                 Card playerCard = stringToCard(color, value);
+                System.out.println(playerCard);
+                System.out.println(hand.contains(playerCard));
 
-                if (isMoveValid(playerCard, pileCard) && hand.contains(playerCard)) {       
-                    pile.add(hand.remove(hand.indexOf(playerCard)));
-                }  
+                if (hand.contains(playerCard)) {       
+                    pile.addFirst(hand.remove(hand.indexOf(playerCard)));
+                } else {
+                    System.out.println("Card not allowed");
+                } 
+
+                if (player.getHand().size() == 0) {
+                    System.out.println(player.name + " wins the game!!");
+                    isGameOver = true;
+                    break;
+                }
+
+                
 
             }
+
         }
+
+
+
     }
     
 
     public Card stringToCard(String color, String value) {
-       return new Card(ColorEnum.valueOf(color.toUpperCase()), ValueEnum.valueOf(value.toUpperCase()));
+       return new Card(ColorEnum.valueOf(color.trim().toUpperCase()), ValueEnum.valueOf(value.trim().toUpperCase()));
     }
 
 
@@ -92,7 +121,7 @@ public class UnoGame {
         
         int dealCount = 1;
 
-        while(dealCount<=7) {
+        while(dealCount<=3) {
             for (Player player : players) {
                 player.getHand().add(deck.pop());
             }
@@ -104,7 +133,7 @@ public class UnoGame {
     public void initializePlayers() {
         System.out.println("Player[s], welcome to Uno 🎲");
 
-        System.out.println("How many players for this game🧍?");
+        System.out.print("How many players for this game🧍?: ");
         
         int playersCount = scanner.nextInt();
         scanner.nextLine();
@@ -112,7 +141,7 @@ public class UnoGame {
         int count = 1;
 
         while (count<=playersCount) {
-            System.out.println("Player " + count + ", what is your name?");
+            System.out.print("Player " + count + ", what is your name?: ");
             String playerName = scanner.nextLine();
 
             players.add(new Player(playerName));
@@ -129,4 +158,16 @@ public class UnoGame {
             System.out.println("Player " + playerNumber + ": " + player.name);
         }
     }
+
+    public void printPile() {
+        for (Card card : pile) {
+            System.out.println(card);
+        }
+    }
+
+
+
+
+
 }
+
