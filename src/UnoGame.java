@@ -128,7 +128,22 @@ public class UnoGame {
 
                 switch (choice) {
                     case 1:
+                        printPlayers();
+                        System.out.print("Pick a player number: ");
+                        Player drawPlayer = players.get(scanner.nextInt());
+                        scanner.nextLine();
+
+                        System.out.println("In letters, what number should be drawn to: ");
+                        String drawNumber = scanner.nextLine();
+
                         
+                        
+
+                        do {
+                            drawCard(drawPlayer);
+                        } while (deck.getFirst().value != ValueEnum.valueOf(drawNumber.trim().toUpperCase()));
+
+
                         break;
                 
                     default:
