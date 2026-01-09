@@ -3,6 +3,8 @@ import java.util.Objects;
 public class Card {
     ColorEnum color;
     ValueEnum value;
+    ColorEnum nextColor;
+    boolean active = true;
 
     public Card(ColorEnum color, ValueEnum value) {
         this.color = color;
