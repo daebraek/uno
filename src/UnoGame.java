@@ -44,7 +44,6 @@ public class UnoGame {
 
         while (!isGameOver) {
 
-            
             Player player = players.get(currentPlayer);
             Card pileCard = pile.getFirst();
 
@@ -63,8 +62,6 @@ public class UnoGame {
             System.out.println(player.name + "'s Turn");
             System.out.println();
             
-
- 
             
             System.out.println("First Card in the Pile: " + pileCard);
             System.out.println();
@@ -73,17 +70,16 @@ public class UnoGame {
             playRound(player, pileCard);
             
 
-
             if (checkWin(player)) {
                 isGameOver = true;
             }
 
 
-
-
-            if (pile.getFirst().value == ValueEnum.REVERSE) {
+            if (pile.getFirst().value == ValueEnum.REVERSE && pile.getFirst().active) {
                 System.out.println("The direction of play has been reversed.");
                 direction = -1;
+
+                pile.getFirst().active = false;
             }
 
             if (pile.getFirst().value == ValueEnum.CHANGE_COLOR && pile.getFirst().active) {
@@ -91,6 +87,8 @@ public class UnoGame {
                 String color = scanner.nextLine();
 
                 pile.getFirst().color = ColorEnum.valueOf(color.trim().toUpperCase());
+
+                pile.getFirst().active = false;
             }
 
             if (pile.getFirst().value == ValueEnum.SWAP_HANDS && pile.getFirst().active) {
@@ -99,6 +97,10 @@ public class UnoGame {
 
                 int number = scanner.nextInt();
                 scanner.nextLine();
+
+                System.out.print("What color do you want this to be?: ");
+                String color = scanner.nextLine();
+                pile.getFirst().color = ColorEnum.valueOf(color.trim().toUpperCase());
 
                 Player swappedPlayer = players.get(number-1);
                 
@@ -112,10 +114,11 @@ public class UnoGame {
                 player.getHand().addAll(temp1);
                 player.getHand().retainAll(temp1);
 
-                pileCard.active = false;
+                pile.getFirst().active = false;
+                pile.getFirst().color = pile.getFirst().nextColor;
             }
 
-            if (pile.getFirst().value == ValueEnum.BLANK_CARD) { 
+            if (pile.getFirst().value == ValueEnum.BLANK_CARD && pile.getFirst().active) { 
                 System.out.println("Here are your options.");
                 System.out.println("1. Pick a number for a player to draw to until they find it.");
                 System.out.println("2. Everyone (but you) picks up 5 cards");
@@ -124,6 +127,7 @@ public class UnoGame {
                 System.out.println();
 
                 System.out.print("Pick a number to represent your choice: ");
+
                 int choice = scanner.nextInt();
                 scanner.nextLine();
 
@@ -139,11 +143,12 @@ public class UnoGame {
 
                         do {
                             drawCard(drawPlayer);
-                        } while (drawPlayer.getHand().getLast().value == ValueEnum.valueOf(drawNumber.trim().toUpperCase()));
+                        } while (drawPlayer.getHand().getLast().value != ValueEnum.valueOf(drawNumber.trim().toUpperCase()));
 
 
                         break;
                     case 2:
+                        System.out.println("this is five players");
                         for (Player p : players) {
                             if (p != player) {
                                 drawCard(p);
@@ -155,6 +160,8 @@ public class UnoGame {
                             
                         }
 
+                        break;
+
                     case 3: 
                         printPlayers();
                         System.out.print("Pick a player number: ");
@@ -162,14 +169,21 @@ public class UnoGame {
                         scanner.nextLine();  
                         
                         for (int i = 0; i<p.getHand().size()*2; i++) {
+                            System.out.println("removing" + i);
                             drawCard(p);
-                            i++;
                         }
 
+                        break;
 
                     default:
                         break;
                 }
+
+                System.out.print("What color do you want this to be?: ");
+                String color = scanner.nextLine();
+                pile.getFirst().nextColor = ColorEnum.valueOf(color.trim().toUpperCase());
+
+                pile.getFirst().active = false;
 
             }
 
@@ -193,7 +207,7 @@ public class UnoGame {
             pile.addFirst(deck.pop());
         } while (pile.getFirst().color==ColorEnum.WILD);
     }
-
+ 
     public void playRound(Player player, Card pileCard) {
             player.printHand();
             ArrayList<Card> hand = player.getHand();
@@ -206,9 +220,6 @@ public class UnoGame {
                 String value = scanner.nextLine().toUpperCase();
 
                 
-
-
-
                 Card playerCard = stringToCard(color, value);
                 System.out.println(playerCard);
 
@@ -218,17 +229,12 @@ public class UnoGame {
                     String nextColor = scanner.nextLine();
                     
                     playerCard.nextColor = ColorEnum.valueOf(nextColor.trim().toUpperCase());
-                } else if (playerCard.equals(new Card(ColorEnum.WILD, ValueEnum.SWAP_HANDS))) {
-                    System.out.print("What color do you want this to be?: ");
 
-                    String nextColor = scanner.nextLine();
-                    
-                    playerCard.nextColor = ColorEnum.valueOf(nextColor.trim().toUpperCase());
+                } 
 
-                    playerCard.color = playerCard.nextColor;
-                }
-
-                if (isMoveValid(playerCard, pileCard) && hand.contains(playerCard)) {       
+                // TODO: try out a try-catch approach with adding the card to the pile before asking for color change
+                if (isMoveValid(playerCard, pileCard) && hand.contains(playerCard)) { 
+                    hand.get(hand.indexOf(playerCard)).nextColor = playerCard.nextColor;
                     pile.addFirst(hand.remove(hand.indexOf(playerCard)));
                 } else {
                     System.out.println("Card not allowed");
@@ -242,6 +248,8 @@ public class UnoGame {
                 drawCard(player);
                 drawCard(player);
                 drawCard(player);
+
+                System.out.println(pileCard.nextColor);
 
                 pileCard.color = pileCard.nextColor;
             } else if (isDrawNeeded(player, pileCard) && pileCard.value == ValueEnum.PLUS_TWO && pileCard.active) {
@@ -259,19 +267,7 @@ public class UnoGame {
                 drawCard(player);
             }
     }
-
-    public boolean plusTwoCheck(Player player, Card pileCard) {
-        ArrayList<Card> hand = player.getHand();
-
-        for (Card card : hand) {
-            if(card.value == ValueEnum.PLUS_TWO) {
-                return false;
-            }
-        }
-
-        return true;
-
-    } 
+ 
     
     public boolean isDrawNeeded(Player player, Card pileCard) {
         ArrayList<Card> hand = player.getHand();
@@ -346,7 +342,7 @@ public class UnoGame {
         
         int dealCount = 1;
 
-        while(dealCount<=3) {
+        while(dealCount<=7) {
             for (Player player : players) {
                 player.getHand().add(deck.pop());
             }
@@ -392,7 +388,7 @@ public class UnoGame {
 
 
     // TODO: add auto play
-    // TODO: add special card operations
+
 
 
 }

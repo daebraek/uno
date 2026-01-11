@@ -69,6 +69,35 @@ public class Deck {
      
     }
 
+    public void initializeDeckSpecial() {
+        for (ColorEnum color : ColorEnum.values()) {
+
+            if (color == ColorEnum.WILD) {
+                for (ValueEnum value : ValueEnum.values()) {
+
+                    if (value.equals(ValueEnum.SWAP_HANDS)) {
+                        deck.addFirst(new Card(color, value));
+                    }
+
+                    else if (value.equals(ValueEnum.BLANK_CARD)) {
+                        deck.addFirst(new Card(color, ValueEnum.BLANK_CARD));
+                        deck.addFirst(new Card(color, ValueEnum.BLANK_CARD));
+                        deck.addFirst(new Card(color, ValueEnum.BLANK_CARD));
+                    }
+
+                    else if (!value.getHasColor()) {
+                        deck.addFirst(new Card(color, value));
+                        deck.addFirst(new Card(color, value));
+                        deck.addFirst(new Card(color, value));
+                        deck.addFirst(new Card(color, value));
+                    }
+                }
+            }
+
+
+        }  
+    }
+
     // prints the number of coloured and wild cards
     public void printDeckCount() {
         int hasColorCount =0;
